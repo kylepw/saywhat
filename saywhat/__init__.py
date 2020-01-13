@@ -1,5 +1,23 @@
 from flask import Flask
+import os
 
-app = Flask(__name__)
 
-import saywhat.views
+def create_app(test_config=None):
+    app = Flask(__name__)
+
+    if test_config is None:
+        # Default settings
+        app.config.from_pyfile('settings.py')
+    else:
+        # Override with test settings
+        app.config.from_mapping(test_config)
+
+
+    @app.route('/')
+    def index():
+        return 'hey there'
+
+    return app
+
+
+# import saywhat.views

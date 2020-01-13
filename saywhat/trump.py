@@ -11,8 +11,18 @@ def main():
 
     tweets = []
     total = 0
-    for t in tweepy.Cursor(api.user_timeline, tweet_mode='extended', screen_name=screen_name, include_rts=True, count=200).items(200):
-        if not t.retweeted and not t.full_text.startswith('RT @') and keyword.lower() in t.full_text.lower():
+    for t in tweepy.Cursor(
+        api.user_timeline,
+        tweet_mode='extended',
+        screen_name=screen_name,
+        include_rts=True,
+        count=200,
+    ).items(200):
+        if (
+            not t.retweeted
+            and not t.full_text.startswith('RT @')
+            and keyword.lower() in t.full_text.lower()
+        ):
             tweets.append(
                 {
                     'id': t.id_str,
@@ -29,7 +39,7 @@ def main():
     print('Total tweets:', total)
     print('Total non-retweets:', len(tweets))
 
-    #print_rls(api)
+    # print_rls(api)
 
 
 if __name__ == '__main__':

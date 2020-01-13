@@ -11,4 +11,3 @@ t = Tweet(text='hey guys', tweet_id=123, user=u)
 
 session.add(t)
 session.commit()
-

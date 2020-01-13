@@ -13,6 +13,7 @@ tweepy = "^3.8.0"
 
 [tool.poetry.dev-dependencies]
 python-dotenv = "^0.10.3"
+pylint = "^2.4.4"
 
 [build-system]
 requires = ["poetry>=0.12"]

@@ -1,7 +1,7 @@
 import unittest
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import Mock, patch
 from saywhat import create_app
-from saywhat.twitter import _create_api, fetch_tweets, rate_limit_status, tweepy
+from saywhat.twitter import _create_api, fetch_tweets
 
 
 @patch('tweepy.AppAuthHandler')

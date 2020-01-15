@@ -23,42 +23,22 @@ class TestCreateApi(unittest.TestCase):
 @patch('saywhat.twitter._create_api')
 class TestFetchTweets(unittest.TestCase):
     def setUp(self):
-        patch_cursor = patch('tweepy.Cursor')
-        self.mock_cursor = patch_cursor.start()
-        self.mock_cursor.return_value.items.return_value = []
-        self.addCleanup(patch_cursor.stop)
-
-    def test_called_with_screen_name(self, mock_create_api):
-
-        fetch_tweets(screen_name='realdonaldtrump')
-
-        self.mock_cursor.assert_called_with(
-            method=mock_create_api().user_timeline,
-            screen_name='realdonaldtrump',
-            tweet_mode='extended',
-            include_rts=True,
-        )
-
-    def test_called_with_user_id(self, mock_create_api):
-
-        fetch_tweets(user_id=25073877)
-
-        self.mock_cursor.assert_called_with(
-            method=mock_create_api().user_timeline,
-            user_id=25073877,
-            tweet_mode='extended',
-            include_rts=True,
-        )
-
-    def test_ignores_retweets(self, mock_create_api):
         mock_user = Mock(name='user_obj', id='123', screen_name='realdonaldtrump')
-        orig_tweet = Mock(
+        orig_tweet1 = Mock(
             name='orig_tweet',
             retweeted=False,
             id_str='456',
             created_at='today',
             user=mock_user,
             full_text='original tweet',
+        )
+        orig_tweet2 = Mock(
+            name='orig_tweet',
+            retweeted=False,
+            id_str='456',
+            created_at='today',
+            user=mock_user,
+            full_text='original tweet yoyoyo',
         )
         retweet1 = Mock(
             name='retweet1',
@@ -77,13 +57,44 @@ class TestFetchTweets(unittest.TestCase):
             full_text='retweet with retweeted attr',
         )
 
+        patch_cursor = patch('tweepy.Cursor')
+        self.mock_cursor = patch_cursor.start()
         self.mock_cursor.return_value.items.return_value = iter(
-            [orig_tweet, retweet1, retweet2]
+            [orig_tweet1, orig_tweet2, retweet1, retweet2]
+        )
+        self.addCleanup(patch_cursor.stop)
+
+    def test_called_with_screen_name(self, mock_create_api):
+        fetch_tweets(screen_name='realdonaldtrump')
+
+        self.mock_cursor.assert_called_with(
+            method=mock_create_api().user_timeline,
+            screen_name='realdonaldtrump',
+            tweet_mode='extended',
+            include_rts=True,
         )
 
+    def test_called_with_user_id(self, mock_create_api):
+        fetch_tweets(user_id=25073877)
+
+        self.mock_cursor.assert_called_with(
+            method=mock_create_api().user_timeline,
+            user_id=25073877,
+            tweet_mode='extended',
+            include_rts=True,
+        )
+
+    def test_ignores_retweets(self, mock_create_api):
         result = fetch_tweets(screen_name='realdonaldtrump')
-        self.assertEqual(len(result), 1)
+
+        self.assertEqual(len(result), 2)
         self.assertEqual(result[0]['text'], 'original tweet')
+
+    def test_fetches_only_tweets_with_keyword(self, mock_create_api):
+        result = fetch_tweets(screen_name='realdonaldtrump', keyword='yoyo')
+
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]['text'], 'original tweet yoyoyo')
 
 
 if __name__ == '__main__':

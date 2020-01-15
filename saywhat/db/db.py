@@ -3,13 +3,13 @@ from .models import Base, User, Tweet
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-DB_PATH = os.getenv('DB_PATH')
+DATABASE = os.getenv('DATABASE')
 
 def _create_session():
-    if DB_PATH is None:
-        raise EnvironmentError('DB_PATH must be set.')
+    if DATABASE is None:
+        raise EnvironmentError('DATABASE must be set.')
 
-    engine = create_engine(DB_PATH, echo=True)
+    engine = create_engine(DATABASE, echo=True)
     Base.metadata.create_all(engine)
 
     Session = sessionmaker(bind=engine)
@@ -51,4 +51,4 @@ def count_users():
 
 
 if __name__ == '__main__':
-    engine = create_engine(DB_PATH, echo=True)
+    engine = create_engine(, echo=True)

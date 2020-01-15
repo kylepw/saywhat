@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, jsonify
 import os
 
 
@@ -12,10 +12,9 @@ def create_app(test_config=None):
         # Override with test settings
         app.config.from_mapping(test_config)
 
-
-    @app.route('/')
-    def index():
-        return 'hey there'
+    @app.route('/health')
+    def health():
+        return jsonify('healthy')
 
     return app
 

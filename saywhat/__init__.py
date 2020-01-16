@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask
 import os
 
 
@@ -12,7 +12,7 @@ def create_app(test_config=None):
         # Override with test settings
         app.config.from_mapping(test_config)
 
-    with app.app_context():
-        import saywhat.views
+    from .views import main
+    app.register_blueprint(main)
 
     return app

@@ -11,7 +11,7 @@ def _create_api():
         raise EnvironmentError('API_SECRET_KEY must be set.')
 
     auth = tweepy.AppAuthHandler(API_KEY, API_SECRET_KEY)
-    return tweepy.API(auth, wait_on_rate_limit=True)
+    return tweepy.API(auth)
 
 
 def rate_limit_status():
@@ -25,15 +25,20 @@ def rate_limit_status():
         'user_timeline': status['resources']['statuses']['/statuses/user_timeline'],
     }
 
+def is_valid_account(screen_name):
+    """Check if Twitter screen name is valid."""
+
+    return True
+
 
 def fetch_tweets(
-    screen_name=None, user_id=None, keyword=None, since_id=None, limit=200
+    screen_name=None, user_id=None, query=None, since_id=None, limit=200
 ):
-    """Fetch latest non-retweets from Twitter with optional keyword."""
+    """Fetch latest non-retweets from Twitter with optional query."""
     if screen_name is None and user_id is None:
         raise ValueError('Must provide a screen_name or user_id.')
-    if keyword is None:
-        keyword = ''
+    if query is None:
+        query = ''
 
     api = _create_api()
 
@@ -54,11 +59,11 @@ def fetch_tweets(
 
     total = 0
     tweets = []
-    for t in tweepy.Cursor(**params).items(limit):
+    for t in tweepy.Cursor(**params).items():
         if (
             not t.retweeted
             and not t.full_text.startswith('RT @')
-            and keyword.lower() in t.full_text.lower()
+            and query.lower() in t.full_text.lower()
         ):
             tweets.append(
                 {
@@ -69,6 +74,8 @@ def fetch_tweets(
                     'text': t.full_text,
                 }
             )
-        total += 1
+            total += 1
+            if len(tweets) == limit:
+                break
 
     return tweets

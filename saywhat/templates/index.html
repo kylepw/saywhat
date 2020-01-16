@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% block body %}
+  <form method="post">
+    <ul>
+      <li>
+        <label for="sname">Screen name:</label>
+        <input type="text" id="sname" name="screen_name">
+      </li>
+      <li>
+        <label for="qry">Query:</label>
+        <input type="text" id="qry" name="query">
+      </li>
+      <li>
+        <button type="submit">Say what?</button>
+      </li>
+    </ul>
+  </form>
+  {% for tweet in tweets %}
+  <p>
+    {{ tweet.user_id }}
+    {{ tweet.user_sname }}
+    {{ tweet.text }}
+    {{ tweet.created_at }}
+  </p>
+  {% endfor %}
+{% endblock %}

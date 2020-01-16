@@ -90,8 +90,8 @@ class TestFetchTweets(unittest.TestCase):
         self.assertEqual(len(result), 2)
         self.assertEqual(result[0]['text'], 'original tweet')
 
-    def test_fetches_only_tweets_with_keyword(self, mock_create_api):
-        result = fetch_tweets(screen_name='realdonaldtrump', keyword='yoyo')
+    def test_fetches_only_tweets_with_query(self, mock_create_api):
+        result = fetch_tweets(screen_name='realdonaldtrump', query='yoyo')
 
         self.assertEqual(len(result), 1)
         self.assertEqual(result[0]['text'], 'original tweet yoyoyo')

@@ -12,11 +12,7 @@ def create_app(test_config=None):
         # Override with test settings
         app.config.from_mapping(test_config)
 
-    @app.route('/health')
-    def health():
-        return jsonify('healthy')
+    with app.app_context():
+        import saywhat.views
 
     return app
-
-
-# import saywhat.views
